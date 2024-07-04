@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "title": "Vasaros atostogos dviems Druskininkuose",
+    "country": "Lietuva",
+    "city": "Druskininkai",
+    "duration": "7 dienos 6 naktys",
+    "season": "Visus metus",
+    "description": "Kiekvienas esame unikalus ir nepakartojamas!“ – tiki sanatorijos „Mineral SPA Draugystė“ profesionalų komanda. Tikrame gamtos prieglobstyje – Druskininkų parke, prie Ratnyčėlės ir Nemuno upių santakos, – įsikūrusi sanatorija kviečia kiekvieną pasimėgauti kad ir trumpu atokvėpiu gryname ore, pagerinti savijautą individualiomis procedūromis ir leistis į atpalaiduojantį poilsį. Atvykusiųjų laukia: apgyvendinimas dviviečiame kambaryje; pusryčiai, pietūs ir vakarienė (švediškas stalas); fizinės medicinos ir reabilitacijos gydytojo konsultacija;",
+    "price": 499,
+    "photos": [
+      "https://visitbaltics.net/wp-content/uploads/2021/09/photo5924656546313254132-1024x768.jpg",
+      "https://img.sixt.com/1600/8df65370-6ac7-4080-8a86-978b26860f5c.jpg"
+    ],
+    "rating": [
+      4,
+      5,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Pažintinė kelionė pavojingais žmones ryjančiais urvais",
+    "country": "USA",
+    "city": "Tennessee",
+    "duration": "22 dienos 23 naktys",
+    "season": "Nuo kovo 1d iki lapkričio 1d",
+    "description": "Tenesyje po mūsų kojomis slypi stebuklų pasaulis. Ši pietinė valstybė, žinoma dėl savo užburiančių kalnų, sielos muzikos ir turtingos istorijos, slepia tūkstančius gamtos stebuklų urvų pavidalu. Per kalkakmenio uolieną vingiuoja stulbinantys 10 000 urvų, todėl Tenesis buvo pavadintas „Požeminės valstijos“ slapyvardžiu. Pasigilinkime į šį žavų požeminį pasaulį, atkreipdami dėmesį į tris unikaliausius urvus, įkūnijančius žavią valstybės geologinę istoriją. Į kainą įskaičiuotas skrydis, 10 žvaigždučių viešbutis ir maitinimas Gordono Ramzio restorane kasdien 12 kartų vienam asmeniui",
+    "price": 10.000,
+    "photos": [
+      "https://i.natgeofe.com/n/4b86d399-eb46-4864-87a1-dd17a6f5306f/ruby-falls-cavern-tennessee_16x9.jpg?w=1200",
+      "https://raccoonmountaincaverns.com/wp-content/uploads/2023/07/Graphic15.jpg"
+    ],
+    "rating": [
+      5,
+      4,
+      5,
+      4,
+      3
+    ]
+  }
+]
