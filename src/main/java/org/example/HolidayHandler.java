@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class HolidayHandler implements HttpHandler {
     private List<Holiday> holidays;
-    private Gson gson;
+    private final Gson gson;
 
     public HolidayHandler(List<Holiday> holidays) {
         this.holidays = holidays;
@@ -31,14 +31,34 @@ public class HolidayHandler implements HttpHandler {
 
         if (method.equals("POST") && uri.getPath().equals("/createHoliday")) {
             handleCreateHoliday(exchange);
-        } else if (method.equals("GET") && uri.getPath().equals("/getHolidays")) {
+        } if (method.equals("GET") && uri.getPath().equals("/getHolidays")) {
             handleGetHolidays(exchange);
-        } else if (method.equals("GET") && uri.getPath().equals("/getHoliday")) {
+        } if (method.equals("GET") && uri.getPath().equals("/getHoliday")) {
             handleGetHoliday(exchange);
-        } else if (method.equals("POST") && uri.getPath().equals("/updateHoliday")) {
+        } if (method.equals("POST") && uri.getPath().equals("/updateHoliday")) {
             handleUpdateHoliday(exchange);
-        } else if (method.equals("POST") && uri.getPath().equals("/deleteHoliday")) {
+        } if (method.equals("POST") && uri.getPath().equals("/deleteHoliday")) {
             handleDeleteHoliday(exchange);
+        } if (method.equals("GET") && uri.getPath().equals("/resetRatings")) {
+            handleResetHolidayRatings(exchange);
+        } else {
+            exchange.sendResponseHeaders(404, -1);
+        }
+    }
+
+    private void handleResetHolidayRatings(HttpExchange exchange) throws IOException {
+        String query = exchange.getRequestURI().getQuery();
+        Map<String, String> params = queryToMap(query);
+        long id = Long.parseLong(params.get("id"));
+        Holiday holiday = holidays.stream().filter(h -> h.getId() == id).findFirst().orElse(null);
+        if (holiday != null) {
+            holiday.setRating(new int[0]);
+            saveHolidays();
+            String response = "Holiday rating has been reset";
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         } else {
             exchange.sendResponseHeaders(404, -1);
         }

@@ -1,7 +1,6 @@
 package org.example;
 
 import com.google.gson.Gson;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.FileReader;
@@ -25,6 +24,7 @@ public class Main {
         server.createContext("/getHoliday", holidayHandler);
         server.createContext("/updateHoliday", holidayHandler);
         server.createContext("/deleteHoliday", holidayHandler);
+        server.createContext("/resetRatings", holidayHandler);
 
         server.setExecutor(null);
         server.start();
