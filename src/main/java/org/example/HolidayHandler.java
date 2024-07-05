@@ -44,10 +44,10 @@ public class HolidayHandler implements HttpHandler {
         if (method.equals("POST") && uri.getPath().equals("/deleteHoliday")) {
             handleDeleteHoliday(exchange);
         }
-        if (method.equals("GET") && uri.getPath().equals("/resetRatings")) {
+        if (method.equals("POST") && uri.getPath().equals("/resetRatings")) {
             handleResetHolidayRatings(exchange);
         }
-        if (method.equals("GET") && uri.getPath().equals("/rateHoliday")) {
+        if (method.equals("POST") && uri.getPath().equals("/rateHoliday")) {
             handleRateHoliday(exchange);
         } else {
             exchange.sendResponseHeaders(404, -1);
