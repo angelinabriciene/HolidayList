@@ -12,8 +12,10 @@
       "https://visitbaltics.net/wp-content/uploads/2021/09/photo5924656546313254132-1024x768.jpg",
       "https://img.sixt.com/1600/8df65370-6ac7-4080-8a86-978b26860f5c.jpg"
     ],
-    "rating": [],
-    "averageRating": 0.0
+    "rating": [
+      5
+    ],
+    "averageRating": 5.0
   },
   {
     "id": 2,

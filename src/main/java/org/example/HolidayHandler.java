@@ -31,16 +31,48 @@ public class HolidayHandler implements HttpHandler {
 
         if (method.equals("POST") && uri.getPath().equals("/createHoliday")) {
             handleCreateHoliday(exchange);
-        } if (method.equals("GET") && uri.getPath().equals("/getHolidays")) {
+        }
+        if (method.equals("GET") && uri.getPath().equals("/getHolidays")) {
             handleGetHolidays(exchange);
-        } if (method.equals("GET") && uri.getPath().equals("/getHoliday")) {
+        }
+        if (method.equals("GET") && uri.getPath().equals("/getHoliday")) {
             handleGetHoliday(exchange);
-        } if (method.equals("POST") && uri.getPath().equals("/updateHoliday")) {
+        }
+        if (method.equals("POST") && uri.getPath().equals("/updateHoliday")) {
             handleUpdateHoliday(exchange);
-        } if (method.equals("POST") && uri.getPath().equals("/deleteHoliday")) {
+        }
+        if (method.equals("POST") && uri.getPath().equals("/deleteHoliday")) {
             handleDeleteHoliday(exchange);
-        } if (method.equals("GET") && uri.getPath().equals("/resetRatings")) {
+        }
+        if (method.equals("GET") && uri.getPath().equals("/resetRatings")) {
             handleResetHolidayRatings(exchange);
+        }
+        if (method.equals("GET") && uri.getPath().equals("/rateHoliday")) {
+            handleRateHoliday(exchange);
+        } else {
+            exchange.sendResponseHeaders(404, -1);
+        }
+    }
+
+    private void handleRateHoliday(HttpExchange exchange) throws IOException {
+        String query = exchange.getRequestURI().getQuery();
+        Map<String, String> params = queryToMap(query);
+        long id = Long.parseLong(params.get("id"));
+        int rating = Integer.parseInt(params.get("rating"));
+        Holiday holiday = holidays.stream().filter(h -> h.getId() == id).findFirst().orElse(null);
+        if (holiday != null) {
+            int[] newRating = new int[holiday.getRating().length + 1];
+            System.arraycopy(holiday.getRating(), 0, newRating, 0, holiday.getRating().length);
+            newRating[newRating.length - 1] = rating;
+            holiday.setRating(newRating);
+
+            holiday.setAverageRating(RatingCalculator.calculateAverageRating(holiday.getRating()));
+            saveHolidays();
+            String response = "Rating submitted successfully";
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         } else {
             exchange.sendResponseHeaders(404, -1);
         }

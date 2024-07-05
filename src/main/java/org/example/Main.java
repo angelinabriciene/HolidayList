@@ -25,6 +25,7 @@ public class Main {
         server.createContext("/updateHoliday", holidayHandler);
         server.createContext("/deleteHoliday", holidayHandler);
         server.createContext("/resetRatings", holidayHandler);
+        server.createContext("/rateHoliday", holidayHandler);
 
         server.setExecutor(null);
         server.start();
