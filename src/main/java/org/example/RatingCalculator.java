@@ -6,6 +6,6 @@ public class RatingCalculator {
         for (int rating : ratings) {
             sum += rating;
         }
-        return (double) sum / ratings.length;
+        return Double.parseDouble(String.format("%.1f", (double) sum / ratings.length));
     }
 }
