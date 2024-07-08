@@ -28,6 +28,7 @@ public class HolidayHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         URI uri = exchange.getRequestURI();
         String method = exchange.getRequestMethod();
+        handleCORS(exchange);
 
         if (method.equals("POST") && uri.getPath().equals("/createHoliday")) {
             handleCreateHoliday(exchange);
@@ -52,6 +53,13 @@ public class HolidayHandler implements HttpHandler {
         } else {
             exchange.sendResponseHeaders(404, -1);
         }
+    }
+
+    private void handleCORS(HttpExchange exchange) {
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
     }
 
     private void handleRateHoliday(HttpExchange exchange) throws IOException {
