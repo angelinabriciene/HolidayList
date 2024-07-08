@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Main {
@@ -25,7 +26,7 @@ public class Main {
         server.createContext("/updateHoliday", holidayHandler);
         server.createContext("/deleteHoliday", holidayHandler);
         server.createContext("/resetRatings", holidayHandler);
-        server.createContext("/rateHolidays", holidayHandler);
+        server.createContext("/rateHoliday", holidayHandler);
 
         server.setExecutor(null);
         server.start();
@@ -43,6 +44,9 @@ public class Main {
     }
 
     public static long getNextId() {
-        return idCounter++;
+        return holidays.stream()
+                .mapToLong(Holiday::getId)
+                .max()
+                .orElse(0) + 1;
     }
 }

@@ -29,7 +29,7 @@ public class HolidayHandler implements HttpHandler {
         URI uri = exchange.getRequestURI();
         String method = exchange.getRequestMethod();
 
-        if (method.equals("GET") && uri.getPath().equals("/createHoliday")) {
+        if (method.equals("POST") && uri.getPath().equals("/createHoliday")) {
             handleCreateHoliday(exchange);
         }
         if (method.equals("GET") && uri.getPath().equals("/getHolidays")) {
@@ -38,16 +38,16 @@ public class HolidayHandler implements HttpHandler {
         if (method.equals("GET") && uri.getPath().equals("/getHoliday")) {
             handleGetHoliday(exchange);
         }
-        if (method.equals("GET") && uri.getPath().equals("/updateHoliday")) {
+        if (method.equals("POST") && uri.getPath().equals("/updateHoliday")) {
             handleUpdateHoliday(exchange);
         }
-        if (method.equals("GET") && uri.getPath().equals("/deleteHoliday")) {
+        if (method.equals("POST") && uri.getPath().equals("/deleteHoliday")) {
             handleDeleteHoliday(exchange);
         }
-        if (method.equals("GET") && uri.getPath().equals("/resetRatings")) {
+        if (method.equals("POST") && uri.getPath().equals("/resetRatings")) {
             handleResetHolidayRatings(exchange);
         }
-        if (method.equals("GET") && uri.getPath().equals("/rateHoliday")) {
+        if (method.equals("POST") && uri.getPath().equals("/rateHoliday")) {
             handleRateHoliday(exchange);
         } else {
             exchange.sendResponseHeaders(404, -1);
