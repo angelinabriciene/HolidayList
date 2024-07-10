@@ -7,12 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Main {
 
-    private static long idCounter = 0;
     private static List<Holiday> holidays = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {

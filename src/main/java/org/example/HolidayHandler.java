@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +27,11 @@ public class HolidayHandler implements HttpHandler {
         URI uri = exchange.getRequestURI();
         String method = exchange.getRequestMethod();
         handleCORS(exchange);
+
+        if (method.equals("OPTIONS")) {
+            exchange.sendResponseHeaders(200, -1);
+            return;
+        }
 
         if (method.equals("POST") && uri.getPath().equals("/createHoliday")) {
             handleCreateHoliday(exchange);
@@ -60,6 +63,7 @@ public class HolidayHandler implements HttpHandler {
         exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
         exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "*");
         exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
+        exchange.getResponseHeaders().set("Access-Control-Max-Age", "3600");
     }
 
     private void handleRateHoliday(HttpExchange exchange) throws IOException {
@@ -145,59 +149,51 @@ public class HolidayHandler implements HttpHandler {
     }
 
     private void handleUpdateHoliday(HttpExchange exchange) throws IOException {
-        String query = exchange.getRequestURI().getQuery();
-        Map<String, String> params = queryToMap(query);
+        Holiday updatedHoliday = requestHoliday(exchange);
+        holidays.stream()
+                .filter(h -> h.getId() == updatedHoliday.getId())
+                .findFirst()
+                .ifPresent(existingHoliday -> {
+                    int index = holidays.indexOf(existingHoliday);
+                    holidays.set(index, updatedHoliday);
+                });
+        saveHolidays();
+        String response = "{\"success\": true, \"message\": \"Holiday has been updated successfully\"}";
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
 
-        long id = Long.parseLong(params.get("id"));
-        String title = params.get("title");
-        String country = params.get("country");
-        String city = params.get("city");
-        String duration = params.get("duration");
-        String season = params.get("season");
-        String description = params.get("description");
-        double price = Double.parseDouble(params.get("price"));
-        String[] photos = params.get("photos").split(",");
-        int[] rating = new int[0];
+    private Holiday requestHoliday(HttpExchange exchange) throws IOException {
+        InputStream requestBody = exchange.getRequestBody();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(requestBody));
+        String dataString = "";
+        String line;
 
-        Holiday updatedHoliday = new Holiday(title, country, city, duration, season, description, price, photos, rating);
-        updatedHoliday.setId(id);
-        for (Holiday holiday : holidays) {
-            if (holiday.getId() == id) {
-                holiday.setTitle(updatedHoliday.getTitle());
-                holiday.setCountry(updatedHoliday.getCountry());
-                holiday.setCity(updatedHoliday.getCity());
-                holiday.setDuration(updatedHoliday.getDuration());
-                holiday.setSeason(updatedHoliday.getSeason());
-                holiday.setDescription(updatedHoliday.getDescription());
-                holiday.setPrice(updatedHoliday.getPrice());
-                holiday.setPhotos(updatedHoliday.getPhotos());
-                saveHolidays();
-                String response = "Holiday has been updated successfully";
-                exchange.sendResponseHeaders(200, response.getBytes().length);
-                OutputStream os = exchange.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
-                return;
-            }
+        while ((line = reader.readLine())!= null) {
+            dataString += line;
         }
-        exchange.sendResponseHeaders(404, -1);
+        reader.close();
+        return gson.fromJson(dataString, Holiday.class);
     }
 
     private void handleDeleteHoliday(HttpExchange exchange) throws IOException {
-        String query = exchange.getRequestURI().getQuery();
-        Map<String, String> params = queryToMap(query);
-        long id = Long.parseLong(params.get("id"));
-        Holiday holiday = holidays.stream().filter(h -> h.getId() == id).findFirst().orElse(null);
-        if (holiday != null) {
-            holidays.remove(holiday);
+        Holiday holidayToDelete = requestHoliday(exchange);
+        boolean removed = holidays.removeIf(h -> h.getId() == holidayToDelete.getId());
+        if (removed) {
             saveHolidays();
-            String response = "Holiday has been deleted successfully";
+            String response = "{\"success\": true, \"message\": \"Holiday has been deleted successfully\"}";
             exchange.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
         } else {
-            exchange.sendResponseHeaders(404, -1);
+            String response = "{\"success\": false, \"message\": \"Holiday not found\"}";
+            exchange.sendResponseHeaders(404, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         }
     }
 
@@ -218,31 +214,29 @@ public class HolidayHandler implements HttpHandler {
         try (FileWriter writer = new FileWriter("holidays.json")) {
             gson.toJson(holidays, writer);
         } catch (IOException e) {
+
+            System.out.println(e);
+
             e.printStackTrace();
         }
     }
 
-
     private void handleCreateHoliday(HttpExchange exchange) throws IOException {
-        String query = exchange.getRequestURI().getQuery();
-        Map<String, String> params = queryToMap(query);
+        InputStream requestBody = exchange.getRequestBody();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(requestBody));
+        String dataString = "";
+        String line;
+        while ((line = reader.readLine()) != null) {
+            dataString += line;
+        }
 
-        String title = params.get("title");
-        String country = params.get("country");
-        String city = params.get("city");
-        String duration = params.get("duration");
-        String season = params.get("season");
-        String description = params.get("description");
-        double price = Double.parseDouble(params.get("price"));
-        String[] photos = params.get("photos").split(",");
-        int[] rating = new int[0];
-
-        Holiday holiday = new Holiday(title, country, city, duration, season, description, price, photos, rating);
+        reader.close();
+        Holiday holiday = gson.fromJson(dataString, Holiday.class);
         holiday.setId(Main.getNextId());
+
         holidays.add(holiday);
         saveHolidays();
-        System.out.println(holidays);
-        String response = "Holiday: " + title + " has been created successfully";
+        String response = "Holiday: " + holiday.getTitle() + " has been created successfully";
         exchange.sendResponseHeaders(201, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
